@@ -10,3 +10,22 @@ COPY main.go /service
 WORKDIR /service/app/tooling/sales-admin
 RUN go build -ldflags "-X main.build=${BUILD_REF}"
 
+
+# Run the Go Binary in Alpine.
+FROM alpine:3.17
+ARG BUILD_DATE
+ARG BUILD_REF
+# RUN addgroup -g 1000 -S sales && \
+#     adduser -u 1000 -h /service -G sales -S sales
+# COPY --from=build_sales-api --chown=sales:sales /service /service/service
+COPY --from=build_sales-api /service /service/service
+WORKDIR /service
+USER sales
+CMD ["./sales-api"]
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.title="sales-api" \
+      org.opencontainers.image.authors="Mo" \
+      org.opencontainers.image.source="https://github.com/moabukar/go-labs-tools/zarf/docker" \
+      org.opencontainers.image.revision="${BUILD_REF}" \
+      org.opencontainers.image.vendor="Mo Images"
