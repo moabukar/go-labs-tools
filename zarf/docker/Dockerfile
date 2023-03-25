@@ -4,10 +4,10 @@ ENV CGO_ENABLED 0
 ARG BUILD_REF
 
 # Copy the source code into the container
-COPY main.go /service
+COPY . /service
 
-# Build the admin binary.
-WORKDIR /service/app/tooling/sales-admin
+# Build the service binary.
+WORKDIR /service
 RUN go build -ldflags "-X main.build=${BUILD_REF}"
 
 
